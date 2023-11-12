@@ -1,7 +1,7 @@
 [English](README.md) | 简体中文
-## 🚀HttpCat 概述 
+## 🚀HttpCat 概述
 
-HttpCat 是一个基于 HTTP 的文件传输工具，旨在提供简单、高效、稳定的文件上传和下载功能。
+HttpCat 是一个基于go实现的 HTTP 的文件传输服务，旨在提供简单、高效、稳定的文件上传和下载功能。
 
 项目目标：一个可靠、高效、易用的HTTP文件传输瑞士军刀,它将大大提高你的文件传输控制力和体验。
 无论是临时分享还是批量传输文件,HttpCat都将是你的优秀助手。
@@ -10,18 +10,18 @@ HttpCat 是一个基于 HTTP 的文件传输工具，旨在提供简单、高效
 * 简单易用
 * 无需外部依赖，易于移植
 
-## 🎉安装 
+## 🎉安装
 下载：
 
 
-解压:
+解压到httpcat目录:
 ```bash
-tar -zxvf httpcat_*.tar.gz
+tar -zxvf httpcat_*.tar.gz -C httpcat
 ```
 
 修改配置文件:
 ```bash
-cd httpcat*
+cd httpcat
 vi ./conf/svr.yml
 ```
 
@@ -33,11 +33,11 @@ vi ./conf/svr.yml
 ```bash
 # ./httpcat -h
 Usage of ./httpcat:
---c string          ConfigPath (default "./conf/svr.yml")
---download string   指定下载文件的路径,右斜线结尾 (default "./website/download/")
--P, --port int          host port. (default 8888)
---static string     指定静态资源路径(web) (default "./website/static")
---upload string     指定上传文件的路径,右斜线结尾 (default "./website/upload/")
+  -C, --config string     ConfigPath (default "./conf/svr.yml")
+      --download string   指定下载文件的路径,右斜线结尾 (default "./website/download/")
+  -P, --port int          host port.
+      --static string     指定静态资源路径(web) (default "./website/static/")
+      --upload string     指定上传文件的路径,右斜线结尾 (default "./website/upload/")
 ```
 
 ### 使用tmux运行在后台
@@ -91,5 +91,6 @@ curl -vF "f1=@/root/hello.mojo" http://localhost:8888/api/v1/file/upload
    生成的签名用于在请求头部或其他方式中进行身份验证或安全控制。
 2. 支持p2p环境下http使用
 3. https支持
+
 
 欢迎提issue~ Good luck 🍀
