@@ -1,5 +1,5 @@
 [English](README.md) | 简体中文
-## 🚀HttpCat 概述
+## 🚀HttpCat 概述 
 
 HttpCat 是一个基于go实现的 HTTP 的文件传输服务，旨在提供简单、高效、稳定的文件上传和下载功能。
 
@@ -10,7 +10,7 @@ HttpCat 是一个基于go实现的 HTTP 的文件传输服务，旨在提供简�
 * 简单易用
 * 无需外部依赖，易于移植
 
-## 🎉安装
+## 🎉安装 
 下载：
 
 
@@ -25,9 +25,14 @@ cd httpcat
 vi ./conf/svr.yml
 ```
 
-运行:
+linux下运行:
 ```bash
 ./httpcat -c conf/svr.yml
+```
+
+windows下运行:
+```bash
+httpcat.exe --upload /home/web/website/download/ --download /home/web/website/download/ -C F:\open_code\httpcat\server\conf\svr.yml
 ```
 
 ```bash
@@ -62,6 +67,21 @@ To delete farming session
 $ tmux kill-session -t tmux_httpcat
 ```
 
+### linux可以使用systemd运行在后台
+```bash
+cp  httpcat.service /usr/lib/systemd/system/httpcat.service
+systemctl daemon-reload
+systemctl start httpcat
+```
+注意：你可能需要根据你的需要修改启动参数,如下 3个目录一致:
+```bash
+vi httpcat.service
+```
+```
+ExecStart=/usr/local/bin/httpcat  --static=/home/web/website/upload/  --upload=/home/web/website/upload/ --download=/home/web/website/upload/  -C /etc/httpdcat/svr.yml
+```
+
+
 ## ❤使用技巧
 ### 使用curl工具上传文件
 ```bash
@@ -83,6 +103,9 @@ curl -vF "f1=@/root/hello.mojo" http://localhost:8888/api/v1/file/upload
 `
 下载某个具体的文件
 `http://127.0.0.1:8888/api/v1/file/download?filename=xxx.jpg
+`
+获取某个文件的信息，包括md5
+`http://{{ip}}:{{port}}/api/v1/file/fileInfo?name=FlF9mrjXgAAZHon.jpg
 `
 
 ## 💪TODO
