@@ -97,6 +97,41 @@ curl -vF "f1=@/root/hello.mojo" http://localhost:8888/api/v1/file/upload
 > 注意： f1 为服务端代码定义的，修改为其他，如file，会报错上传失败。
 
 
+#### 上传文件认证
+如果配置文件开启了 enableUploadToken，那么上传文件需要认证，需要在请求头中添加token，token的值为配置文件中的uploadToken值。
+根据ak、sk生成独立的上传token凭证,上传文件时候，附带token，服务端会校验token是否合法。
+
+http://{{ip}}:{{port}}/api/v1/user/createUploadToken
+POST
+{
+"accessKey": "httpcat",
+"secretKey": "httpcat_app_secret"
+}
+例如返回：
+{
+"code": 0,
+"msg": "success",
+"data": "httpcat:dZE8NVvimYNbV-YpJ9EFMKg3YaM=:eyJkZWFkbGluZSI6MH0="
+}
+
+
+您可以使用 -H 选项在 cURL 命令中添加自定义的 HTTP 头部
+curl -v -F "f1=@/root/hello.mojo" -H "UploadToken: httpcat:bbE8NVvimYNbV-CaJ9EFMKg3YaM=:eyJkZWFkbGluZSI6M15=" http://localhost:8888/api/v1/file/upload
+
+#### 上传文件企业微信webhook通知
+配置svr.yml文件中的persistent_notify_url，上传成功后，会发送企业微信通知。
+
+通知信息如下：
+```
+有文件上传归档,上传信息：
+- IP地址：192.168.31.3
+- 上传时间：2023-11-29 23:07:04
+- 文件名：syslog.md
+- 文件大小：4.88 KB
+- 文件MD5：8346ecb8e6342d98a9738c5409xxx
+```
+
+
 #### 下载文件
 ##### api 接口
 查看下载根目录下，某个目录的文件列表
