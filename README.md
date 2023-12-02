@@ -131,6 +131,31 @@ curl -v -F "f1=@/root/hello.mojo" -H "UploadToken: httpcat:bbE8NVvimYNbV-CaJ9EFM
 - 文件MD5：8346ecb8e6342d98a9738c5409xxx
 ```
 
+#### 支持sqlite保留上传历史记录
+如果配置开启了 enable_sqlite，那么上传文件会记录到sqlite数据库中，可以通过sqlite3命令行工具查询上传历史记录。
+
+
+使用sqlite3命令行工具创建数据库，查询数据
+```bash
+sudo apt install sqlite3
+sqlite3 --version
+```
+
+运行以下命令启动 sqlite3 工具，并指定要创建的数据库文件名（例如 mydatabase.db）：
+```bash
+sqlite3 sqlite.db
+```
+
+在 sqlite3 提示符下，输入 .tables 命令来列出数据库中的所有表：
+```bash
+.tables
+```
+
+```bash
+SELECT * FROM notifications;
+```
+
+
 
 #### 下载文件
 ##### api 接口
