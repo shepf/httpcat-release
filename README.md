@@ -1,36 +1,35 @@
-[English](README.md) | 简体中文
-## 🚀HttpCat 概述 
+English | [简体中文](translations/README-cn.md)
 
-HttpCat 是一个基于go实现的 HTTP 的文件传输服务，旨在提供简单、高效、稳定的文件上传和下载功能。
+## 🚀HttpCat Overview
+HttpCat is an HTTP file transfer service implemented in Go, designed to provide a simple, efficient, and stable solution for file uploading and downloading.
 
-项目目标：一个可靠、高效、易用的HTTP文件传输瑞士军刀,它将大大提高你的文件传输控制力和体验。
-无论是临时分享还是批量传输文件,HttpCat都将是你的优秀助手。
+Project goals: To create a reliable, efficient, and user-friendly HTTP file transfer Swiss Army Knife that greatly enhances your control and experience with file transfers. Whether it's for temporary sharing or bulk file transfers, HttpCat will be your excellent assistant.
 
-## 💥功能特点
-* 简单易用
-* 无需外部依赖，易于移植
-
-## 🎉安装 
-下载：
+Please note that this translation is a direct translation and may require further refinement by a professional translator for the best results.
 
 
-解压到httpcat目录:
+## 💥Key Features
+* Simple and easy to use
+* No external dependencies, easy to port
+
+## 🎉Installation
+Extract to the httpcat directory:
 ```bash
 tar -zxvf httpcat_*.tar.gz -C httpcat
 ```
 
-修改配置文件:
+Modify configuration file:
 ```bash
 cd httpcat
 vi ./conf/svr.yml
 ```
 
-linux下运行:
+linux:
 ```bash
 ./httpcat -C conf/svr.yml
 ```
 
-windows下运行:
+windows:
 ```bash
 httpcat.exe --upload /home/web/website/download/ --download /home/web/website/download/ -C F:\open_code\httpcat\server\conf\svr.yml
 ```
@@ -39,19 +38,20 @@ httpcat.exe --upload /home/web/website/download/ --download /home/web/website/do
 # ./httpcat -h
 Usage of ./httpcat:
   -C, --config string     ConfigPath (default "./conf/svr.yml")
-      --download string   指定下载文件的路径,右斜线结尾 (default "./website/download/")
+      --download string   Specify the path for downloading files, ending with a forward slash (/) (default "./website/download/")
   -P, --port int          host port.
-      --static string     指定静态资源路径(web) (default "./website/static/")
-      --upload string     指定上传文件的路径,右斜线结尾 (default "./website/upload/")
+      --static string     Specify the path for static resources (web), ending with a forward slash (/) (default "./website/static/")
+      --upload string     Specify the path for uploading files, ending with a forward slash (/) (default "./website/upload/")
 ```
 
-### 使用tmux运行在后台
-可以利用tmux方式后台运行:
+
+### Run in the background using tmux
+You can use tmux to run in the background:
 ```bash
 Create a new tmux session using a socket file named tmux_httpcat
 $ tmux -S tmux_httpcat
 
-# 进入tmux后，可以执行运行命令,如：
+#  Once inside tmux, you can execute running commands, such as:
 httpcat --static=/home/web/website/upload/  -C server/conf/svr.yml
 
 Move process to background by detaching
@@ -67,13 +67,18 @@ To delete farming session
 $ tmux kill-session -t tmux_httpcat
 ```
 
-### linux可以使用systemd运行在后台
+
+### Linux can use systemd to run in the background
 ```bash
 cp  httpcat.service /usr/lib/systemd/system/httpcat.service
 systemctl daemon-reload
 systemctl start httpcat
 ```
-注意：你可能需要根据你的需要修改启动参数,如下 3个目录一致:
+
+> Note: You may need to modify the startup parameters according to your needs. 
+> Ensure that the following three directories are consistent (so that the upload directory is also the download directory, 
+> and it is also the web frontend directory where files can be downloaded without authentication).
+
 ```bash
 vi httpcat.service
 ```
@@ -82,24 +87,26 @@ ExecStart=/usr/local/bin/httpcat  --static=/home/web/website/upload/  --upload=/
 ```
 
 
-## ❤使用技巧
-### 文件操作相关接口
-#### 使用curl工具上传文件
+## ❤ Tips and Tricks
+### File Operation Related APIs
+#### Uploading Files Using Curl Tool
 ```bash
 curl -vF "f1=@/root/hello.mojo" http://localhost:8888/api/v1/file/upload
 ```
-使用了 `curl` 命令来向指定的 URL 发送一个 `multipart/form-data` 格式的 POST 请求。下面是对每部分的解释：
-- `curl`: 一个用来与服务器端进行数据传输的工具，支持多种协议。
-- `-v`: 在命令执行时输出详细的操作信息，即 verbose 模式。
-- `-F "f1=@/root/hello.mojo"`: 指定了要发送的表单数据。`-F` 选项表示要发送一个表单，`f1=@/root/hello.mojo` 表示要上传的文件字段名为 `f1`，文件路径为 `/root/hello.mojo`。这个字段的值是指向本地文件的相对或绝对路径。
+The curl command is used to send a multipart/form-data format POST request to the specified URL. Here is an explanation of each part:
+- `curl`:  curl is a tool used for transferring data to/from a server, supporting multiple protocols.
+- `-v`: Detailed operational information is displayed during command execution, which is known as verbose mode.
+- `-F "f1=@/root/hello.mojo"`: Specifies the form data to be sent. The -F option indicates that a form is being sent, and f1=@/root/hello.mojo indicates that the file field to be uploaded is named f1, with the file path /root/hello.mojo. The value of this field is the relative or absolute path to the local file.
 - `http://localhost:8888/api/v1/file/upload`: 要发送请求到的 URL，这条命令会将文件上传到这个 URL。
 
-> 注意： f1 为服务端代码定义的，修改为其他，如file，会报错上传失败。
+> Note: f1 is defined in the server-side code. Modifying it to something else, such as file, will result in an error and the upload will fail.
 
 
-#### 上传文件认证
-如果配置文件开启了 enableUploadToken，那么上传文件需要认证，需要在请求头中添加token，token的值为配置文件中的uploadToken值。
-根据ak、sk生成独立的上传token凭证,上传文件时候，附带token，服务端会校验token是否合法。
+#### File Upload Authentication
+If the enable_upload_token option is enabled in the configuration file, file uploads require authentication. You need to add a token in the request header, where the token value should match the enable_upload_token value specified in the configuration file.
+An independent upload token credential is generated based on the app_key and app_secret. When uploading a file, include the token in the request. The server will then verify the validity of the token.
+
+
 
 http://{{ip}}:{{port}}/api/v1/user/createUploadToken
 POST
@@ -115,38 +122,38 @@ POST
 }
 
 
-您可以使用 -H 选项在 cURL 命令中添加自定义的 HTTP 头部
+```bash
 curl -v -F "f1=@/root/hello.mojo" -H "UploadToken: httpcat:bbE8NVvimYNbV-CaJ9EFMKg3YaM=:eyJkZWFkbGluZSI6M15=" http://localhost:8888/api/v1/file/upload
-
-#### 上传文件企业微信webhook通知
-配置svr.yml文件中的persistent_notify_url，上传成功后，会发送企业微信通知。
-
-通知信息如下：
-```
-有文件上传归档,上传信息：
-- IP地址：192.168.31.3
-- 上传时间：2023-11-29 23:07:04
-- 文件名：syslog.md
-- 文件大小：4.88 KB
-- 文件MD5：8346ecb8e6342d98a9738c5409xxx
 ```
 
-#### 支持sqlite保留上传历史记录
-如果配置开启了 enable_sqlite，那么上传文件会记录到sqlite数据库中，可以通过sqlite3命令行工具查询上传历史记录。
+####  Upload file Enterprise WeChat webhook notification.
+Configure the persistent_notify_url in the svr.yml file. After a successful upload, an Enterprise WeChat notification will be sent.
 
+The notification message is as follows:
 
-使用sqlite3命令行工具创建数据库，查询数据
+File upload archived, upload information:
+- IP Address: 192.168.31.3
+- Upload Time: 2023-11-29 23:07:04
+- File Name: syslog.md
+- File Size: 4.88 KB
+- File MD5: 8346ecb8e6342d98a9738c5409xxx
+
+#### Support SQLite to retain upload history.
+If the enable_sqlite option is enabled in the configuration, uploaded files will be recorded in an SQLite database. You can use the `sqlite` command-line tool to query the upload history records.
+
+Use the `sqlite` command-line tool to create a database and query data.
+
 ```bash
 sudo apt install sqlite3
 sqlite3 --version
 ```
 
-运行以下命令启动 sqlite3 工具，并指定要创建的数据库文件名（例如 mydatabase.db）：
+Run the following command to connect to an SQLite database and specify the filename for the database to be created (e.g., sqlite.db):
 ```bash
 sqlite3 sqlite.db
 ```
 
-在 sqlite3 提示符下，输入 .tables 命令来列出数据库中的所有表：
+At the sqlite3 prompt, enter the .tables command to list all the tables in the database:
 ```bash
 .tables
 ```
@@ -156,23 +163,23 @@ SELECT * FROM notifications;
 ```
 
 
-
 #### 下载文件
 ##### api 接口
-查看下载根目录下，某个目录的文件列表
+View the list of files in a specific directory within the download root.
 `http://127.0.0.1:8888/api/v1/file/listFiles?dir=
 `
-下载某个具体的文件
+Download a specific file.
 `http://127.0.0.1:8888/api/v1/file/download?filename=xxx.jpg
 `
-获取某个文件的信息，包括md5
+Get information about a specific file, including its MD5 hash.
 `http://{{ip}}:{{port}}/api/v1/file/fileInfo?name=FlF9mrjXgAAZHon.jpg
 `
 
-### p2p相关接口
-需要配置文件开启p2p功能，默认关闭
 
-#### 通过http接口向p2p网络发送消息
+### P2P Related APIs
+P2P functionality needs to be enabled in the configuration file, which is disabled by default.
+
+#### Sending messages to the P2P network via HTTP API
 http://{{ip}}:{{port}}/api/v1/p2p/send_message
 POST
 {
@@ -180,12 +187,3 @@ POST
 "message": "ceshi cccccccccccc"
 }
 
-## 💪TODO
-1. 接口增加签名认证机制
-   将请求方法、URL、查询字符串、访问密钥、时间戳、请求体的哈希值等信息按照一定规则拼接起来，并使用给定的密钥进行签名计算。
-   生成的签名用于在请求头部或其他方式中进行身份验证或安全控制。
-2. 支持p2p环境下http使用
-3. https支持
-
-
-欢迎提issue~ Good luck 🍀
