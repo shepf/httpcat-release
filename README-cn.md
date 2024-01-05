@@ -1,4 +1,4 @@
-[English](../README.md) | 简体中文
+[English](README.md) | 简体中文
 ## 🚀HttpCat 概述
 
 HttpCat 是一个基于go实现的 HTTP 的文件传输服务，旨在提供简单、高效、稳定的文件上传和下载功能。
