@@ -14,37 +14,68 @@ Please note that this translation is a direct translation and may require furthe
 * No external dependencies, easy to port
 
 ## 🎉Installation
-Extract to the httpcat directory:
+1. Download the latest httpcat installation package.
+   `https://github.com/shepf/httpcat-release/tags`
+
+2. Planning and creating directories for httpcat usage
+   Assuming we plan to start the project as follows:
+   ```bash
+   /usr/local/bin/httpcat  --port=80 --static=/home/web/website/httpcat_web/  --upload=/home/web/website/upload/ --download=/home/web/website/upload/  -C /etc/httpdcat/svr.yml
+   ```
+   * --port Specify the listening port for httpcat.
+   * --upload Specify the directory for uploading files.
+   * --download Specify the directory for downloading files.
+   * -C Specify the configuration file to use. (Note: Modify the location of the SQLite file storage as needed: sqlite_db_path: "./data/sqlite.db")
+
+
+Prepare the directory for file uploads (we will use the same directory for uploads and downloads):
+   ```bash
+   mkdir -p /home/web/website/upload/
+   ```
+
+Prepare the web static resource directory.
+   ```bash
+   mkdir -p /home/web/website/httpcat_web/  
+   ```
+
+Prepare the directory for storing configuration files.
+   ```bash
+   mkdir -p /etc/httpdcat/
+   ```
+
+3. Installation
 ```bash
-tar -zxvf httpcat_*.tar.gz -C httpcat
+   mkdir httpcat
+   cd httpcat
+```
+Upload the installation package: httpcat_v0.0.9.tar.gz、httpcat_web_v0.0.9.zip
+
+
+install httpcat
+```bash
+tar -zxvf httpcat_v0.0.9.tar.gz
+cp httpcat /usr/local/bin/
+cp conf/svr.yml /etc/httpdcat/
 ```
 
-Modify configuration file:
+install httpcat_web
 ```bash
-cd httpcat
-vi ./conf/svr.yml
+cp httpcat_web_v0.0.9.zip /home/web/website/
+cd /home/web/website/
+unzip httpcat_v0.0.9.tar.gz
+mv dist httpcat_web
 ```
 
-linux:
+check
 ```bash
-./httpcat -C conf/svr.yml
+httpcat -v
+httpcat -h
 ```
 
-windows:
+The command-line parameters for running on Windows are the same as on Linux, except that you use httpcat.exe instead of httpcat.
 ```bash
 httpcat.exe --upload /home/web/website/download/ --download /home/web/website/download/ -C F:\open_code\httpcat\server\conf\svr.yml
 ```
-
-```bash
-# ./httpcat -h
-Usage of ./httpcat:
-  -C, --config string     ConfigPath (default "./conf/svr.yml")
-      --download string   Specify the path for downloading files, ending with a forward slash (/) (default "./website/download/")
-  -P, --port int          host port.
-      --static string     Specify the path for static resources (web), ending with a forward slash (/) (default "./website/static/")
-      --upload string     Specify the path for uploading files, ending with a forward slash (/) (default "./website/upload/")
-```
-
 
 ### Run in the background using tmux
 You can use tmux to run in the background:
@@ -70,10 +101,21 @@ $ tmux kill-session -t tmux_httpcat
 
 
 ### Linux can use systemd to run in the background
+The installation package comes with an httpcat.service file that allows you to run httpcat in the background using systemd. 
+
+You can modify the httpcat.service file according to your needs.
+
+For example, you can modify the ExecStart parameter in the httpcat.service file to specify your own startup parameters.
+
+To add a listening port parameter, you can add --port=80:
+```bash
+ExecStart=/usr/local/bin/httpcat --port=80  --static=/home/web/website/httpcat_web/  --upload=/home/web/website/upload/ --download=/home/web/website/upload/  -C /etc/httpdcat/svr.yml
+```
+
 ```bash
 cp  httpcat.service /usr/lib/systemd/system/httpcat.service
-systemctl daemon-reload
-systemctl start httpcat
+sudo systemctl daemon-reload
+sudo systemctl start httpcat
 ```
 
 > Note: You may need to modify the startup parameters according to your needs.
