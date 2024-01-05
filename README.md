@@ -1,4 +1,4 @@
-English | [简体中文](translations/README-cn.md)
+English | [简体中文](README-cn.md)
 
 ## 🚀HttpCat Overview
 HttpCat is an HTTP file transfer service implemented in Go, designed to provide a simple, efficient, and stable solution for file uploading and downloading.
