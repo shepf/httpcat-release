@@ -163,7 +163,7 @@ app_secret: "httpcat_app_secret"
 In addition to the built-in app_key and app_secret, you can also add custom app_key and app_secret through the interface. 
 You can generate upload tokens based on the app_key and app_secret through the interface.
 As shown in the figure below, you can click the "Generate Upload Token" button to obtain the upload token.
-![img.png](translations/img.png)
+![img.png](img.png)
 
 
 ####  Upload file Enterprise WeChat webhook notification.
