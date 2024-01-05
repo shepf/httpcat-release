@@ -1,4 +1,4 @@
-[English](README.md) | 简体中文
+[English](../README.md) | 简体中文
 ## 🚀HttpCat 概述
 
 HttpCat 是一个基于go实现的 HTTP 的文件传输服务，旨在提供简单、高效、稳定的文件上传和下载功能。
@@ -80,45 +80,71 @@ vi httpcat.service
 ExecStart=/usr/local/bin/httpcat  --static=/home/web/website/upload/  --upload=/home/web/website/upload/ --download=/home/web/website/upload/  -C /etc/httpdcat/svr.yml
 ```
 
+## httpcat前端
+新版本增加了前端页面，前端采用独立发布形式，根据需要，用户选择下载。
+因为httpcat自带静态资源文件处理，用户可以自由选择是否使用前端页面。
+
+本前端是单页面应用，生产环境静态资源走 static 路由，api接口走 api 路由。如果用户自搭nginx，注意配置 /static 路由到静态资源目录，/api 路由到 httpcat 服务。
+
+下载前端发布文件，解压到web目录，httpcat 会自动加载web目录下的静态资源文件。
+httpcat web目录由配置文件中的static指定，如果不指定，默认为当前目录下的 website/static目录。
+或者使用命令行参数指定，如：
+```bash
+--static=/home/web/website/httpcat_web/
+```
+
+### 前端部署
+1. 下载前端独立发布文件，如 httpcat_web_v0.0.7.zip
+2. 解压到web目录
+   Assuming the web directory configured for httpcat is:  `/home/web/website/httpcat_web/`
+    ```bash
+       cd /home/web/website/
+       unzip httpcat_web_v0.0.9.zip
+       mv  dist httpcat_web
+    ```
+3. 启动httpcat服务
+   启动服务需要指定web界面目录，使用 --static 参数指定，如：
+    ```bash
+    ./httpcat --static=/home/web/website/httpcat_web/  -C conf/svr.yml
+    ```
+4. 访问httpcat 前端服务
+    ```bash
+    http://127.0.0.1:8888
+    ```
 
 ## ❤使用技巧
 ### 文件操作相关接口
 #### 使用curl工具上传文件
 ```bash
-curl -vF "f1=@/root/hello.mojo" http://localhost:8888/api/v1/file/upload
+curl -v -F "f1=@/root/hello.mojo" -H "UploadToken: httpcat:dZE8NVvimYNbV-YpJ9EFMKg3YaM=:eyJkZWFkbGluZSI6MH0=" http://localhost:8888/api/v1/file/upload
 ```
 使用了 `curl` 命令来向指定的 URL 发送一个 `multipart/form-data` 格式的 POST 请求。下面是对每部分的解释：
 - `curl`: 一个用来与服务器端进行数据传输的工具，支持多种协议。
 - `-v`: 在命令执行时输出详细的操作信息，即 verbose 模式。
 - `-F "f1=@/root/hello.mojo"`: 指定了要发送的表单数据。`-F` 选项表示要发送一个表单，`f1=@/root/hello.mojo` 表示要上传的文件字段名为 `f1`，文件路径为 `/root/hello.mojo`。这个字段的值是指向本地文件的相对或绝对路径。
 - `http://localhost:8888/api/v1/file/upload`: 要发送请求到的 URL，这条命令会将文件上传到这个 URL。
+- `-H "UploadToken: httpcat:dZE8NVvimYNbV-YpJ9EFMKg3YaM=:eyJkZWFkbGluZSI6MH0="`: 上传token，根据app_key、app_secret生成独立的上传token凭证。上传文件时候，附带上传token，服务端会校验token是否合法。
 
 > 注意： f1 为服务端代码定义的，修改为其他，如file，会报错上传失败。
 
 
-#### 上传文件认证
-如果配置文件开启了 `enable_upload_token`，那么上传文件需要认证，需要在请求头中添加token，token的值为配置文件中的`enable_upload_token`值。
-根据app_key、app_secret生成独立的上传token凭证。上传文件时候，附带token，服务端会校验token是否合法。
+#### 上传文件认证：上传token
+如果配置文件开启了 `enable_upload_token`，那么上传文件需要认证，需要在请求头中添加 上传token，token的值为配置文件中的`enable_upload_token`值。
+根据app_key、app_secret生成独立的上传token凭证。上传文件时候，附带上传token，服务端会校验token是否合法。
 
+上传token，根据app_key、app_secret生成。系统会根据配置文件内置一个app_key、app_secret。
 
-http://{{ip}}:{{port}}/api/v1/user/createUploadToken
-POST
-{
-"accessKey": "httpcat",
-"secretKey": "httpcat_app_secret"
-}
-例如返回：
-{
-"code": 0,
-"msg": "success",
-"data": "httpcat:dZE8NVvimYNbV-YpJ9EFMKg3YaM=:eyJkZWFkbGluZSI6MH0="
-}
+> 注意：系统内置的app_key、app_secret，只能通过svr.yml来修改，不能通过界面修改，重启httpcat会加载系统内置的app_key、app_secret。
 
-
-You can use the -H option to add custom HTTP headers in the cURL command.
-```bash
-curl -v -F "f1=@/root/hello.mojo" -H "UploadToken: httpcat:bbE8NVvimYNbV-CaJ9EFMKg3YaM=:eyJkZWFkbGluZSI6M15=" http://localhost:8888/api/v1/file/upload
+如：svr.yml文件中配置如下：
+```darcs
+app_key: "httpcat"
+app_secret: "httpcat_app_secret"
 ```
+除了系统内置的app_key、app_secret，还可以通过界面添加自定义的app_key、app_secret，
+可以通过界面根据app_key、app_secret生成上传token。
+如下图，可以通过点击“生成上传token”按钮，获取上传token。
+![img.png](img.png)
 
 #### 上传文件企业微信webhook通知
 配置svr.yml文件中的`persistent_notify_url`，上传成功后，会发送企业微信通知。
@@ -158,32 +184,53 @@ SELECT * FROM notifications;
 ```
 
 #### 下载文件
-##### api 接口
-查看下载根目录下，某个目录的文件列表
-`http://127.0.0.1:8888/api/v1/file/listFiles?dir=
-`
-下载某个具体的文件
-`http://127.0.0.1:8888/api/v1/file/download?filename=xxx.jpg
-`
-获取某个文件的信息，包括md5
-`http://{{ip}}:{{port}}/api/v1/file/fileInfo?name=FlF9mrjXgAAZHon.jpg
-`
+下载某个特定文件:
+```bash
+wget -O syslog222 http://{{ip}}:{{port}}/api/v1/file/download?filename=syslog222
+```
+当您使用 wget 命令下载文件时，文件的名称由请求 URL 中的文件名部分确定。由于 URL 参数的存在，wget 命令可能会将整个 URL 当做文件名。
+为了确保下载的文件名正确，您可以使用 -O 参数来指定文件名：
 
 ### p2p相关接口
 需要配置文件开启p2p功能，默认关闭
 
 #### 通过http接口向p2p网络发送消息
+```bash
 http://{{ip}}:{{port}}/api/v1/p2p/send_message
 POST
 {
 "topic": "httpcat",
 "message": "ceshi cccccccccccc"
 }
+```
+
 
 ## 💪TODO
 1. HTTPS support
-2. Internationalization
-
 
 Feel free to raise an issue. Good luck! 🍀
 
+## 🍀 FAQ
+### 忘记密码怎么办？
+如果忘记密码，可以修改sqlite数据库，删除admin用户，重启httpcat服务，会重新创建admin用户。
+或者直接删除sqlite数据库，重启httpcat服务，会重新创建sqlite数据库。
+
+默认的sqlite数据库路径，由配置文件中的sqlite_db_path指定，默认为：`./data/sqlite.db`，可以通过配置文件修改sqlite数据库路径。
+
+我们找到这个文件，并删除这个文件,然后重启httpcat即可。
+```bash
+find / -name sqlite.db
+rm xxx/sqlite.db
+```
+
+## 📝License
+1. 本软件仅供个人使用，禁止用于商业目的。
+2. 本软件的复制、分发、修改和使用应遵循以下条件：
+   - 禁止用于商业目的。
+   - 禁止将本软件用于任何商业产品或服务。
+   - 保留软件中的版权和许可声明。
+   - 除非获得明确的书面许可，禁止修改或删除软件中的版权和许可声明。
+3. 本软件按 "原样" 提供，作者不承担任何明示或暗示的保证和责任。
+4. 如果您使用了本软件，即表示您已接受此许可协议。
+
+Good luck! 🍀
