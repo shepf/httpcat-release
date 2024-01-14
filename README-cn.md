@@ -45,21 +45,21 @@ HttpCat 是一个基于go实现的 HTTP 的文件传输服务，旨在提供简�
    mkdir httpcat
    cd httpcat
 ```
-上传安装包 httpcat_v0.0.9.tar.gz、httpcat_web_v0.0.9.zip
+上传安装包 httpcat_v0.1.1.tar.gz、httpcat_web_v0.1.1.zip
 
 
 安装httpcat
 ```bash
-tar -zxvf httpcat_v0.0.9.tar.gz
+tar -zxvf httpcat_v0.1.1.tar.gz
 cp httpcat /usr/local/bin/
 cp conf/svr.yml /etc/httpdcat/
 ```
 
 安装httpcat_web
 ```bash
-cp httpcat_web_v0.0.9.zip /home/web/website/
+cp httpcat_web_v0.1.1.zip /home/web/website/
 cd /home/web/website/
-unzip httpcat_v0.0.9.tar.gz
+unzip httpcat_v0.1.1.tar.gz
 mv dist httpcat_web
 ```
 
@@ -138,7 +138,7 @@ httpcat web目录由配置文件中的static指定，如果不指定，默认为
    Assuming the web directory configured for httpcat is:  `/home/web/website/httpcat_web/`
     ```bash
        cd /home/web/website/
-       unzip httpcat_web_v0.0.9.zip
+       unzip httpcat_web_v0.1.1.zip
        mv  dist httpcat_web
     ```
 3. 启动httpcat服务
