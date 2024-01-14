@@ -10,6 +10,16 @@ HttpCat 是一个基于go实现的 HTTP 的文件传输服务，旨在提供简�
 * 简单易用
 * 无需外部依赖，易于移植
 
+### v0.1.1前端界面
+![image](https://github.com/shepf/httpcat-release/assets/25335472/b3587b1e-bcf7-4d12-b60e-dda65b124c59)
+
+![image](https://github.com/shepf/httpcat-release/assets/25335472/86216c4a-990e-4ee0-8575-9b146cf5cebd)
+
+![image](https://github.com/shepf/httpcat-release/assets/25335472/c158d910-7ac7-4a43-a17b-7df18eccfdf6)
+
+![image](https://github.com/shepf/httpcat-release/assets/25335472/a5f18044-4802-48e6-8b4d-3c98577eb50e)
+
+
 ## 🎉安装
 1. 下载最新httpcat安装包
    `https://github.com/shepf/httpcat-release/tags`
