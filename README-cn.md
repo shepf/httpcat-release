@@ -21,6 +21,20 @@ HttpCat 是一个基于go实现的 HTTP 的文件传输服务，旨在提供简�
 
 
 ## 🎉安装
+### 快速安装
+v0.1.2版本以及之后版本，可以直接下载最新的httpcat安装包，解压后，直接运行install.sh即可。
+```bash
+mkdir target_directory
+tar -zxvf httpcat_v0.1.2.tar.gz -C target_directory
+```
+
+```bash
+cd target_directory/release
+./install.sh
+```
+
+当然，您也可以参考下面的安装步骤，手动安装，只是前端文件我们已经打包到安装包中，不需要单独下载前端文件。
+### v0.1.1版本以及之前版本安装
 1. 下载最新httpcat安装包
    `https://github.com/shepf/httpcat-release/tags`
 
@@ -82,6 +96,51 @@ httpcat -h
 windows下运行参数同linux，只是使用httpcat.exe替换httpcat
 ```bash
 httpcat.exe --upload /home/web/website/download/ --download /home/web/website/download/ -C F:\open_code\httpcat\server\conf\svr.yml
+```
+
+### 使用tmux运行在后台
+可以利用tmux方式后台运行:
+```bash
+Create a new tmux session using a socket file named tmux_httpcat
+$ tmux -S tmux_httpcat
+
+# 进入tmux后，可以执行运行命令,如：
+httpcat --static=/home/web/website/upload/  -C server/conf/svr.yml
+
+Move process to background by detaching
+Ctrl+b d OR ⌘+b d (Mac)
+
+To re-attach
+$ tmux -S tmux_httpcat attach
+
+Alternatively, you can use the following single command to both create (if not exists already) and attach to a session:
+$ tmux new-session -A -D -s tmux_httpcat
+
+To delete farming session
+$ tmux kill-session -t tmux_httpcat
+```
+
+### linux可以使用systemd运行在后台
+安装包自带了一个httpcat.service文件，可以直接使用systemd运行在后台，你可以根据自己的需要修改httpcat.service文件。
+例如：修改httpcat.service文件中的ExecStart参数，修改为你的启动参数。
+比如添加监听端口参数：`--port=80`
+```bash
+ExecStart=/usr/local/bin/httpcat --port=80  --static=/home/web/website/httpcat_web/  --upload=/home/web/website/upload/ --download=/home/web/website/upload/  -C /etc/httpdcat/svr.yml
+```
+
+```bash
+cp  httpcat.service /usr/lib/systemd/system/httpcat.service
+sudo systemctl daemon-reload
+sudo systemctl start httpcat
+```
+
+> 注意：根据你的业务需要修改启动参数
+> 比如：一个最简单的应用场景：3个目录一致(则上传目录就是下载目录，并且也是web前端目录，可以无认证直接下载):
+```bash
+vi httpcat.service
+```
+```
+ExecStart=/usr/local/bin/httpcat  --static=/home/web/website/upload/  --upload=/home/web/website/upload/ --download=/home/web/website/upload/  -C /etc/httpdcat/svr.yml
 ```
 
 ### 使用tmux运行在后台
