@@ -150,9 +150,9 @@ ExecStart=/usr/local/bin/httpcat  --static=/home/web/website/upload/  --upload=/
 ```
 
 ## httpcat web frontend
-The new version includes a frontend page, which is released separately. Users can choose to download it according to their needs.
+The new version includes a frontend page. Prior to v0.1.1, the frontend was released separately, and users could choose to download it according to their needs. 
 
-Since httpcat comes with built-in static resource file handling, users have the freedom to decide whether to use the frontend page.
+Starting from v0.1.2, the frontend is directly integrated into the installation package, eliminating the need to separately download frontend files.
 
 This frontend is a single-page application. In the production environment, static resources are accessed through the /static route, while API endpoints are accessed through the /api route. 
 
