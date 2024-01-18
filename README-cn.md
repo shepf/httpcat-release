@@ -189,7 +189,9 @@ ExecStart=/usr/local/bin/httpcat  --static=/home/web/website/upload/  --upload=/
 ```
 
 ## httpcat前端
-新版本增加了前端页面，前端采用独立发布形式，根据需要，用户选择下载。
+新版本增加了前端页面，v0.1.1之前前端采用独立发布形式，根据需要，用户选择下载。
+v0.1.2版本以及之后版本，前端直接合入安装包，不需要单独下载前端文件。
+
 因为httpcat自带静态资源文件处理，用户可以自由选择是否使用前端页面。
 
 本前端是单页面应用，生产环境静态资源走 static 路由，api接口走 api 路由。如果用户自搭nginx，注意配置 /static 路由到静态资源目录，/api 路由到 httpcat 服务。
